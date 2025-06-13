@@ -1,0 +1,12 @@
+cmd-ignorelistadd-desc = Добавляет игрока с указанным именем пользователя в игнор-лист сервера.
+cmd-ignorelistadd-help = Использование: ignorelistadd <имя пользователя>.
+cmd-ignorelistadd-existing = { $username } уже находится в игнор-листе!
+cmd-ignorelistadd-added = { $username } добавлен в игнор-лист
+cmd-ignorelistadd-not-found = Невозможно найти '{ $username }'.
+cmd-ignorelistadd-arg-player = [player]
+cmd-ignorelistremove-desc = Удаляет игрока с указанным именем пользователя из игнор-листа сервера.
+cmd-ignorelistremove-help = Использование: ignorelistremove <имя пользователя>
+cmd-ignorelistremove-existing = { $username } нет в игнор-листе!
+cmd-ignorelistremove-removed = { $username } удален из игнор-листа.
+cmd-ignorelistremove-not-found = Невозможно найти '{ $username }'.
+cmd-ignorelistremove-arg-player = [игрок]

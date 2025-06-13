@@ -189,6 +189,10 @@ namespace Content.Server.Database
         public DbSet<RMCPatronLobbyMessage> RMCPatronLobbyMessages { get; set; } = default!;
         public DbSet<RMCPatronRoundEndNTShoutout> RMCPatronRoundEndNTShoutouts { get; set; } = default!;
 
+        // Reserve Registry
+        public DbSet<IgnoreList> IgnoreList { get; set; } = null!;
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Preference>()
@@ -804,6 +808,13 @@ namespace Content.Server.Database
         public List<RMCLinkedAccountLogs> LinkedAccountLogs { get; set; } = default!;
     }
 
+    // Reserve Registry
+    [Table("ignore_list")]
+    public class IgnoreList
+    {
+        [Required, Key] public Guid UserId { get; set; }
+    }
+
     [Table("whitelist")]
     public class Whitelist
     {
@@ -1196,7 +1207,9 @@ namespace Content.Server.Database
         /// Results from rejected connections with external API checking tools
         IPChecks = 5,
         /// Results from rejected connections who are authenticated but have no modern hwid associated with them.
-        NoHwid = 6
+        NoHwid = 6,
+        /// Аккаунт находится в базе Reserve Registry
+        ReserveRegistryCheck = 7
     }
 
     public class ServerBanHit
