@@ -22,6 +22,12 @@ public sealed class CCCVars
         CVarDef.Create("reregistry.enabled", true, CVar.SERVERONLY);
 
     /// <summary>
+    /// Переключатель скипа администрации. Если игрок администратор - не проверять его через реестр
+    /// </summary>
+    public static readonly CVarDef<bool> ReserveRegistrySkipAdmins =
+        CVarDef.Create("reregistry.skip_admins", true, CVar.SERVERONLY | CVar.CONFIDENTIAL);
+
+    /// <summary>
     /// Базовый URL API Reserve Registry
     /// </summary>
     public static readonly CVarDef<string> ReserveRegistryUrl =

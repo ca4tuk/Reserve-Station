@@ -461,8 +461,11 @@ namespace Content.Server.Connection
                 !string.IsNullOrEmpty(_cfg.GetCVar(CCCVars.ReserveRegistryApiToken)) &&
                 !string.IsNullOrEmpty(_cfg.GetCVar(CCCVars.ReserveRegistryUrl)))
             {
-                _sawmill.Info($"{e.UserId}");
-                if (!await _db.GetIgnoreListStatusAsync(userId) && adminData == null)
+                var skipCheck =
+                    await _db.GetIgnoreListStatusAsync(userId) ||
+                    adminData != null && _cfg.GetCVar(CCCVars.ReserveRegistrySkipAdmins);
+
+                if (!skipCheck)
                 {
                     var reserveBan = await QueryReserveRegistryAsync(e.UserData);
 
@@ -485,8 +488,7 @@ namespace Content.Server.Connection
                 else
                 {
                     _sawmill.Debug(
-                        $"[Reserve Registry] Игрок {e.UserName} ({e.UserId}) находится в игнор-листе. " +
-                        $"Пропуск проверки.");
+                        $"[Reserve Registry] Игрок {e.UserName} ({e.UserId}) находится в игнор-листе.");
                 }
             }
             // Reserve Registry end

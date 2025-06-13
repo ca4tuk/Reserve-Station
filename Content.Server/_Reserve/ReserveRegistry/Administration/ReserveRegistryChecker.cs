@@ -37,6 +37,12 @@ namespace Content.Server.ReserveRegistry
                     return null;
                 }
 
+                if (response.StatusCode == HttpStatusCode.TooManyRequests)
+                {
+                    _sawmill.Error("Исчерпан лимит проверок, проверка {0} отклонена.", uuid);
+                    return null;
+                }
+
                 if (!response.IsSuccessStatusCode)
                 {
                     _sawmill.Error("Неожиданный ответ от реестра: {0}", response.StatusCode);
