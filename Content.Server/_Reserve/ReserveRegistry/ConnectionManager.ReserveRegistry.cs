@@ -1,4 +1,8 @@
-﻿using System.Threading.Tasks;
+// SPDX-FileCopyrightText: 2025 сачтик <ca4tuk@gmail.com>
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+
+using System.Threading.Tasks;
 using Content.Server.ReserveRegistry;
 using Content.Shared._Reserve.CCCVars;
 using Robust.Shared.Network;
