@@ -8,7 +8,7 @@ using Content.Server.Database;
 using Content.Shared.Administration;
 using Robust.Shared.Console;
 
-namespace Content.Server.Connection.ReserveRegistry;
+namespace Content.Server._Reserve.Connection.ReserveRegistry;
 
 [AdminCommand(AdminFlags.Ban)]
 public sealed class AddIgnoreListCommand : LocalizedCommands

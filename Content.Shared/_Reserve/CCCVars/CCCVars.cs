@@ -31,7 +31,7 @@ public sealed class CCCVars
     /// Переключатель скипа администрации. Если игрок администратор - не проверять его через реестр
     /// </summary>
     public static readonly CVarDef<bool> ReserveRegistrySkipAdmins =
-        CVarDef.Create("reregistry.skip_admins", true, CVar.SERVERONLY | CVar.CONFIDENTIAL);
+        CVarDef.Create("reregistry.skip_admins", true, CVar.SERVERONLY);
 
     /// <summary>
     /// Базовый URL API Reserve Registry

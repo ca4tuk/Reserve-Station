@@ -13,7 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 
-namespace Content.Server.ReserveRegistry
+namespace Content.Server._Reserve.ReserveRegistry
 {
     [UsedImplicitly]
     public sealed class ReserveRegistryChecker : IDisposable
@@ -38,19 +38,21 @@ namespace Content.Server.ReserveRegistry
 
                 if (response.StatusCode == HttpStatusCode.NotFound)
                 {
-                    _sawmill.Debug("UUID {0} не найден в реестре.", uuid);
+                    _sawmill.Debug(Loc.GetString("reserve-registry-player-not-found"), ("user_id", uuid));
                     return null;
                 }
 
                 if (response.StatusCode == HttpStatusCode.TooManyRequests)
                 {
-                    _sawmill.Error("Исчерпан лимит проверок, проверка {0} отклонена.", uuid);
+                    _sawmill.Error(Loc.GetString("reserve-registry-player-not-found"), ("user_id", uuid));
                     return null;
                 }
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    _sawmill.Error("Неожиданный ответ от реестра: {0}", response.StatusCode);
+                    _sawmill.Error(Loc.GetString("reserve-registry-unexpected-response"),
+                        ("code", response.StatusCode)
+                    );
                     return null;
                 }
 
@@ -65,7 +67,9 @@ namespace Content.Server.ReserveRegistry
             }
             catch (Exception ex)
             {
-                _sawmill.Error("Ошибка во время чека: {0}", ex);
+                _sawmill.Error(Loc.GetString("reserve-registry-error-while-check"),
+                    ("error", ex)
+                );
                 return null;
             }
         }

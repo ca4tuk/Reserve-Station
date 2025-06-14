@@ -4,14 +4,20 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 using System.Threading.Tasks;
-using Content.Server.ReserveRegistry;
+using Content.Server._Reserve.ReserveRegistry;
 using Content.Shared._Reserve.CCCVars;
+using Robust.Shared.Configuration;
 using Robust.Shared.Network;
 
-namespace Content.Server.Connection
+namespace Content.Server._Reserve.Connection
 {
-    public sealed partial class ConnectionManager : IPostInjectInit, IDisposable
+    public sealed class ConnectionManager : IPostInjectInit, IDisposable
     {
+        [Dependency] private readonly IConfigurationManager _cfg = default!;
+        [Dependency] private readonly ILogManager _logManager = default!;
+
+        private ISawmill _sawmill = default!;
+
         private ReserveRegistryChecker? _registryChecker;
         private bool _enabled;
         private string _token = string.Empty;
@@ -43,7 +49,7 @@ namespace Content.Server.Connection
         }
 
 
-        private async Task<ReserveRegistryChecker.RegistryBanData?> QueryReserveRegistryAsync(NetUserData user)
+        public async Task<ReserveRegistryChecker.RegistryBanData?> QueryReserveRegistryAsync(NetUserData user)
         {
             if (!_enabled || _registryChecker == null)
                 return null;

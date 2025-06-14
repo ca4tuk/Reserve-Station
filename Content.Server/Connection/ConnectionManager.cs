@@ -178,6 +178,11 @@ namespace Content.Server.Connection
         [Dependency] private readonly IAdminManager _adminManager = default!;
         [Dependency] private readonly DiscordWebhook _discord = default!; // Reserve Registry
 
+        [Dependency]
+        private readonly Content.Server._Reserve.Connection.ConnectionManager
+            _reserveConnectionManager = default!; // Reserve Registry
+
+
         private ISawmill _sawmill = default!;
         private readonly Dictionary<NetUserId, TimeSpan> _temporaryBypasses = [];
         private IPIntel.IPIntel _ipintel = default!;
@@ -473,7 +478,7 @@ namespace Content.Server.Connection
 
                 if (!skipCheck)
                 {
-                    var reserveBan = await QueryReserveRegistryAsync(e.UserData);
+                    var reserveBan = await _reserveConnectionManager.QueryReserveRegistryAsync(e.UserData);
 
                     if (reserveBan != null)
                     {
@@ -486,7 +491,7 @@ namespace Content.Server.Connection
                             {
                                 var payload = new WebhookPayload
                                 {
-                                    Content = Loc.GetString("reserve-registry-player-kick",
+                                    Content = Loc.GetString("reserve-registry-player-kick-discord-message",
                                         ("name", e.UserData.UserName),
                                         ("user_id", e.UserData.UserId),
                                         ("reason", reserveBan.Reason ?? "не указана")),
@@ -497,23 +502,30 @@ namespace Content.Server.Connection
                         }
 
                         _sawmill.Info(
-                            $"[Reserve Registry] Игрок {e.UserName} ({e.UserId}) находится в реестре Reserve: " +
-                            $"HWID={Convert.ToBase64String(reserveBan.Hwid ?? Array.Empty<byte>())}, " +
+                            $"[Reserve Registry] HWID={Convert.ToBase64String(reserveBan.Hwid ?? Array.Empty<byte>())}, " +
                             $"CKey={reserveBan.Ckey}, IP={reserveBan.Address}, BanTime={reserveBan.BanTime}, " +
-                            $"AddedBy={reserveBan.AddedBy}, Reason={reserveBan.Reason}");
-                        _chatManager.SendAdminAlert($"Игрок из реестра Reserve попытался войти: " +
-                                                    $"{e.UserName} ({e.UserId}). " +
-                                                    $"Причина бана: {reserveBan.Reason}");
+                            $"AddedBy={reserveBan.AddedBy}, Reason={reserveBan.Reason}"
+                        );
 
-                        var message = $"Вы не можете играть на этом сервере. Вы находитесь в реестре Reserve.\n" +
-                                      $"Причина: {reserveBan.Reason ?? "не указана"}";
+                        _chatManager.SendAdminAlert(Loc.GetString("reserve-registry-player-kick-game-message",
+                            ("name", e.UserData.UserName),
+                            ("user_id", e.UserData.UserId),
+                            ("reason", reserveBan.Reason ?? "не указана"))
+                        );
+
+                        var message = Loc.GetString("reserve-registry-player-not-allowed-to-play-here",
+                            ("reason", reserveBan.Reason ?? "не указана")
+                        );
                         return (ConnectionDenyReason.ReserveRegistryCheck, message, null);
                     }
                 }
                 else
                 {
-                    _sawmill.Debug(
-                        $"[Reserve Registry] Игрок {e.UserName} ({e.UserId}) находится в игнор-листе.");
+                    _sawmill.Debug("[Reserve Registry] {0}",
+                        Loc.GetString("reserve-registry-player-ignored",
+                            ("name", e.UserData.UserName),
+                            ("user_id", e.UserData.UserId))
+                    );
                 }
             }
             // Reserve Registry end

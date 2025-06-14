@@ -198,6 +198,7 @@ using Content.Shared.Kitchen;
 using Content.Shared.Players.PlayTimeTracking;
 using Content.Shared.Players.RateLimiting;
 
+
 namespace Content.Server.IoC
 {
     internal static class ServerContentIoC
@@ -249,6 +250,7 @@ namespace Content.Server.IoC
             IoCManager.Register<LastRolledAntagManager>(); // Goobstation - antag pity
             IoCManager.Register<LinkAccountManager>(); // RMC - Patreon
             IoCManager.Register<IDiscordBanInfoSender, DiscordBanInfoSender>(); //ADT Tweak: логи банов для диса
+            IoCManager.Register<Content.Server._Reserve.Connection.ConnectionManager>(); // Reserve Registry
         }
     }
 }
