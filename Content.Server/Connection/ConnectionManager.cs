@@ -129,6 +129,7 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Player;
 using Robust.Shared.Timing;
 using Content.Goobstation.Common.CCVar;
+using Content.Server.Discord;
 using Content.Shared._Reserve.CCCVars; // Goobstation - Queue
 
 /*
@@ -175,6 +176,7 @@ namespace Content.Server.Connection
         [Dependency] private readonly IChatManager _chatManager = default!;
         [Dependency] private readonly IHttpClientHolder _http = default!;
         [Dependency] private readonly IAdminManager _adminManager = default!;
+        [Dependency] private readonly DiscordWebhook _discord = default!; // Reserve Registry
 
         private ISawmill _sawmill = default!;
         private readonly Dictionary<NetUserId, TimeSpan> _temporaryBypasses = [];
@@ -475,6 +477,25 @@ namespace Content.Server.Connection
 
                     if (reserveBan != null)
                     {
+                        var webhookUrl = _cfg.GetCVar(CCCVars.ReserveRegistryDiscordWebhook);
+
+                        if (!string.IsNullOrEmpty(webhookUrl))
+                        {
+                            var webhookData = await _discord.GetWebhook(webhookUrl);
+                            if (webhookData is { } data)
+                            {
+                                var payload = new WebhookPayload
+                                {
+                                    Content = Loc.GetString("reserve-registry-player-kick",
+                                        ("name", e.UserData.UserName),
+                                        ("user_id", e.UserData.UserId),
+                                        ("reason", reserveBan.Reason ?? "не указана")),
+                                };
+                                var identifier = data.ToIdentifier();
+                                await _discord.CreateMessage(identifier, payload);
+                            }
+                        }
+
                         _sawmill.Info(
                             $"[Reserve Registry] Игрок {e.UserName} ({e.UserId}) находится в реестре Reserve: " +
                             $"HWID={Convert.ToBase64String(reserveBan.Hwid ?? Array.Empty<byte>())}, " +
@@ -482,7 +503,7 @@ namespace Content.Server.Connection
                             $"AddedBy={reserveBan.AddedBy}, Reason={reserveBan.Reason}");
                         _chatManager.SendAdminAlert($"Игрок из реестра Reserve попытался войти: " +
                                                     $"{e.UserName} ({e.UserId}). " +
-                                                    $"Причина добавления: {reserveBan.Reason}");
+                                                    $"Причина бана: {reserveBan.Reason}");
 
                         var message = $"Вы не можете играть на этом сервере. Вы находитесь в реестре Reserve.\n" +
                                       $"Причина: {reserveBan.Reason ?? "не указана"}";

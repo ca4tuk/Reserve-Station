@@ -44,4 +44,10 @@ public sealed class CCCVars
     /// </summary>
     public static readonly CVarDef<string> ReserveRegistryApiToken =
         CVarDef.Create("reregistry.api_token", "", CVar.SERVERONLY | CVar.CONFIDENTIAL);
+
+    /// <summary>
+    /// URL Discord вебхука для отправки оповещений про нелицеприятных игроков из Reserve Registry
+    /// </summary>
+    public static readonly CVarDef<string> ReserveRegistryDiscordWebhook =
+        CVarDef.Create("reregistry.webhook", "", CVar.SERVERONLY | CVar.CONFIDENTIAL);
 }
