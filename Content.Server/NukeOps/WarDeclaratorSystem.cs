@@ -22,6 +22,7 @@ using Content.Shared.Database;
 using Content.Shared.NukeOps;
 using Content.Shared.UserInterface;
 using Robust.Server.GameObjects;
+using Robust.Shared.Audio;
 using Robust.Shared.Configuration;
 using Robust.Shared.Timing;
 
@@ -39,6 +40,16 @@ public sealed class WarDeclaratorSystem : EntitySystem
     [Dependency] private readonly ChatSystem _chat = default!;
     [Dependency] private readonly PopupSystem _popupSystem = default!;
     [Dependency] private readonly AccessReaderSystem _accessReaderSystem = default!;
+    private Random _random = new Random();
+
+    // reserve war-meme start
+    private readonly List<SoundSpecifier> _warMemeSounds = new()
+    {
+        new SoundPathSpecifier("/Audio/_Reserve/Announcements/war-meme/1.ogg"), // испанцы
+        new SoundPathSpecifier("/Audio/_Reserve/Announcements/war-meme/2.ogg"), // объявление войны hoi4
+    };
+    // reserve war-meme end
+
 
     public override void Initialize()
     {
@@ -82,11 +93,28 @@ public sealed class WarDeclaratorSystem : EntitySystem
         if (ent.Comp.AllowEditingMessage && message != string.Empty)
             ent.Comp.Message = message;
 
+        // reserve war-meme start
+        SoundSpecifier? sound;
+
+        if (_random.Next(1, 100) > 90)
+        {
+            var index = _random.Next(_warMemeSounds.Count);
+            sound = _warMemeSounds[index];
+        }
+        else
+        {
+            sound = ent.Comp.Sound;
+        }
+        // reserve war-meme end
+
+
         if (ev.Status == WarConditionStatus.WarReady)
         {
             var title = Loc.GetString(ent.Comp.SenderTitle);
-            _chat.DispatchGlobalAnnouncement(ent.Comp.Message, title, true, ent.Comp.Sound, ent.Comp.Color);
-            _adminLogger.Add(LogType.Chat, LogImpact.Low, $"{ToPrettyString(args.Actor):player} has declared war with this text: {ent.Comp.Message}");
+            _chat.DispatchGlobalAnnouncement(ent.Comp.Message, title, true, sound, ent.Comp.Color);
+            _adminLogger.Add(LogType.Chat,
+                LogImpact.Low,
+                $"{ToPrettyString(args.Actor):player} has declared war with this text: {ent.Comp.Message}");
         }
 
         UpdateUI(ent, ev.Status);
