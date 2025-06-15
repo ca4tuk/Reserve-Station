@@ -47,6 +47,12 @@ public sealed class WarDeclaratorSystem : EntitySystem
     {
         new SoundPathSpecifier("/Audio/_Reserve/Announcements/war-meme/1.ogg"), // испанцы
         new SoundPathSpecifier("/Audio/_Reserve/Announcements/war-meme/2.ogg"), // объявление войны hoi4
+        new SoundPathSpecifier("/Audio/_Reserve/Announcements/war-meme/3.ogg"), // огонь по блядскому хутору
+        new SoundPathSpecifier("/Audio/_Reserve/Announcements/war-meme/4.ogg"), // на нас напали, warcraft 3
+        new SoundPathSpecifier("/Audio/_Reserve/Announcements/war-meme/5.ogg"), // не надо дядя
+        new SoundPathSpecifier("/Audio/_Reserve/Announcements/war-meme/6.ogg"), // ну как там с деньгами
+        new SoundPathSpecifier("/Audio/_Reserve/Announcements/war-meme/7.ogg"), // тема босса vordt из дс3
+        new SoundPathSpecifier("/Audio/_Reserve/Announcements/war-meme/8.ogg"), // а я сейчас вам покажу...
     };
     // reserve war-meme end
 
